@@ -12,7 +12,6 @@ let allSockets: User[] = [];
 wss.on("connection", (socket) => {
   socket.on("message", (message) => {
     const parsedMessage = JSON.parse(message.toString());
-
     if (parsedMessage.type === "create") {
       console.log(`Room created: ${parsedMessage.payload.roomId}`);
       allSockets.push({
@@ -20,7 +19,6 @@ wss.on("connection", (socket) => {
         room: parsedMessage.payload.roomId,
       });
     }
-
     if (parsedMessage.type === "join") {
       console.log(`User  joined room: ${parsedMessage.payload.roomId}`);
       allSockets.push({
