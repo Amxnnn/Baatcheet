@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
                   <h1 className="text-sm htext sm:text-base md:text-lg font-medium">Ghost Room</h1>
                 </Link>
             </div>
-            <div className="flex justify-between gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm md:text-base">
+            <div className="flex justify-between items-center gap-2 sm:gap-4 md:gap-6 text-xs sm:text-sm md:text-base">
                 <Link to="/about" className="hover:opacity-80 transition-opacity">
                   <h1 className='ftext'>About</h1>
                 </Link>
