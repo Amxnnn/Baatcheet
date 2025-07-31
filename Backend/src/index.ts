@@ -29,7 +29,6 @@ wss.on("connection", (socket) => {
 
     if (parsedMessage.type === "message") {
       const { roomId, message } = parsedMessage.payload;
-
       // Send the message only to users in the same room
       allSockets.forEach((user) => {
         if (user.room === roomId) {
@@ -42,7 +41,6 @@ wss.on("connection", (socket) => {
         }
       });
     }
-
     if (parsedMessage.type === "leave") {
       allSockets = allSockets.filter((user) => user.socket !== socket);
     }
