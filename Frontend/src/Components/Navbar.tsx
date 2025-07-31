@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
                 <Link to="/about" className="hover:opacity-80 transition-opacity">
                   <h1 className='ftext'>About</h1>
                 </Link>
-                <h1 className='ftext' >Code</h1>
+                <a href='https://github.com/Amxnnn/GhostRoom' className='ftext' >Code</a>
             </div>
         </div>
         

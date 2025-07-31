@@ -17,6 +17,7 @@ const Page1 = () => {
   const [roomId, setRoomId] = useState("");
   const [messages, setMessages] =  useState<string[]>([]);
   const [copied, setCopied] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
   // Refs
   const wsRef = useRef<WebSocket | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -63,48 +64,45 @@ const Page1 = () => {
       console.error("WebSocket error:", error);
     };
   }
-  const joinRoom=()=>{
-    
-    
-    const inputRoomId = joinInputRef.current?.value;
-   
-    if (!inputRoomId) {
-      console.error("Room ID is required");
-      return;
-    }
-    if (wsRef.current) {
-      wsRef.current.close();
-    }
-
-    const ws = new WebSocket(import.meta.env.VITE_BACKEND_WS_URL);
-
-    ws.onopen = () => {
-      ws.send(JSON.stringify({
-        type: "join",
-        payload: {
-          roomId: inputRoomId
-        }
-      }));
-      setConnected(true);
-      wsRef.current = ws;
-      setRoomId(inputRoomId); // Set the room ID for the joining user
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      if (message.type === "message") {
-        setMessages((prevMessages) => [...prevMessages, message.payload.message]);
+  const joinRoom = async () => {
+    setIsJoining(true);
+    try {
+      const inputRoomId = joinInputRef.current?.value;
+      if (!inputRoomId) {
+        console.error("Room ID is required");
+        setIsJoining(false);
+        return;
       }
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-  }
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      const ws = new WebSocket(import.meta.env.VITE_BACKEND_WS_URL);
+      ws.onopen = () => {
+        ws.send(JSON.stringify({
+          type: "join",
+          payload: {
+            roomId: inputRoomId
+          }
+        }));
+        setConnected(true);
+        wsRef.current = ws;
+        setRoomId(inputRoomId); // Set the room ID for the joining user
+        setIsJoining(false);
+      };
+      ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === "message") {
+          setMessages((prevMessages) => [...prevMessages, message.payload.message]);
+        }
+      };
+      ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+        setIsJoining(false);
+      };
+    } catch (error) {
+      setIsJoining(false);
+    }
+  };
   useEffect(() => {
 
     return () => {
@@ -206,9 +204,13 @@ const Page1 = () => {
         <div className="w-full flex gap-4" >
           <input ref={joinInputRef} type="text" placeholder="Enter Room Code" className="w-full mt-4 text-base md:text-lg text-[#655687] focus:outline-[#655687] p-3 outline-[0.5px] bg-transparent border-[#655687] rounded-md border-solid border-[1px] " >
           </input>
-          <button onClick={joinRoom} className="px-16 text-base md:text-lg bg-[#572c73] hover:bg-[#655687] text-white rounded-md mt-4 font-semibold" >
-          Join
-          </button>
+          <button
+          onClick={joinRoom}
+          className={`px-16 text-base md:text-lg rounded-md mt-4 font-semibold transition-colors duration-200 ${isJoining ? "bg-[#bfa6d6] text-[#572c73] cursor-wait" : "bg-[#572c73] hover:bg-[#655687] text-white"}`}
+          disabled={isJoining}
+>
+  {isJoining ? "Joining..." : "Join"}
+</button>
         </div>
         {click &&
         <div className="w-full flex flex-col gap-2 justify-center items-center p-6 bg-[#7f7399] rounded-md mt-4 " >
