@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import dotenv from "dotenv";
-dotenv.config();
+
 
 function generateRandomString(length = 6) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
