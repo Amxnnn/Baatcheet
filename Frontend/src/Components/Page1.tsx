@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react"
+import dotenv from "dotenv";
+dotenv.config();
 
 function generateRandomString(length = 6) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -14,11 +16,11 @@ const Page1 = () => {
   const [click, setClick] = useState(false);
   const [randomString, setRandomString] = useState('');
   const [roomId, setRoomId] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] =  useState<string[]>([]);
   const [copied, setCopied] = useState(false);
   // Refs
-  const wsRef = useRef(null);
-  const inputRef = useRef();
+  const wsRef = useRef<WebSocket | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const joinInputRef = useRef<HTMLInputElement>(null);
   const handleCopy = async () => {
     try {
@@ -36,10 +38,9 @@ const Page1 = () => {
     setRandomString(newRoomId);
     setRoomId(newRoomId);
     if (wsRef.current) {
-      //@ts-ignore
           wsRef.current.close();
         }
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket(import.meta.env.VITE_BACKEND_WS_URL);
 
     ws.onopen = () => {
       ws.send(JSON.stringify({
@@ -76,7 +77,7 @@ const Page1 = () => {
       wsRef.current.close();
     }
 
-    const ws = new WebSocket("ws://localhost:8080");
+    const ws = new WebSocket(import.meta.env.VITE_BACKEND_WS_URL);
 
     ws.onopen = () => {
       ws.send(JSON.stringify({
