@@ -2,7 +2,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import dotenv from "dotenv";
 dotenv.config();
 
-const portUrl = process.env.PORT 
+const portUrl = Number(process.env.PORT)
 const wss = new WebSocketServer({ port: portUrl });
 
 interface User {
